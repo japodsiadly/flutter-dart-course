@@ -39,7 +39,7 @@ class Result extends StatelessWidget {
               primary: Colors.green,
             ),
             onPressed: reset,
-          )
+          ),
         ],
       ),
     );
