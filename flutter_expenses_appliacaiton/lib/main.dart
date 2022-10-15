@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
 import './models/transaction.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -44,6 +50,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [];
+
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((tx) {
@@ -89,6 +97,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final _isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text(
         'Personal Expenses',
@@ -101,9 +112,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
-    var workingDeviceHeight = MediaQuery.of(context).size.height -
+    final workingDeviceHeight = MediaQuery.of(context).size.height -
         appBar.preferredSize.height -
         MediaQuery.of(context).padding.top;
+
+    final _txListWidget = Container(
+        child: TransactionList(_userTransactions, _deleteTransaction),
+        height: workingDeviceHeight * 0.7);
 
     return Scaffold(
       appBar: appBar,
@@ -111,13 +126,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              height: workingDeviceHeight * 0.3,
-              child: Chart(_recentTransactions),
-            ),
-            Container(
-                child: TransactionList(_userTransactions, _deleteTransaction),
-                height: workingDeviceHeight * 0.7),
+            if (_isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!_isLandscape)
+              Container(
+                height: workingDeviceHeight * 0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!_isLandscape) _txListWidget,
+            if (_isLandscape)
+              _showChart
+                  ? Container(
+                      height: workingDeviceHeight * 0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : _txListWidget,
           ],
         ),
       ),
