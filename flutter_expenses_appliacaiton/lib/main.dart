@@ -98,12 +98,47 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final _mediaQuery = MediaQuery.of(context);
-    final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
+  List<Widget> _buildLandscapeContent(double workingHeight, Widget txList) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Switch.adaptive(
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: workingHeight * 0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txList
+    ];
+  }
 
-    final PreferredSizeWidget _appBar = Platform.isIOS
+  List<Widget> _buildPortraitContent(double workingHeight, Widget txList) {
+    return [
+      Container(
+        height: workingHeight * 0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txList
+    ];
+  }
+
+  Widget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text(
               'Personal Expenses',
@@ -129,7 +164,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final _mediaQuery = MediaQuery.of(context);
+    final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget _appBar = _buildAppBar();
     final _workingDeviceHeight = _mediaQuery.size.height -
         _appBar.preferredSize.height -
         _mediaQuery.padding.top;
@@ -144,37 +185,9 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (_isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Show Chart',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Switch.adaptive(
-                    activeColor: Theme.of(context).accentColor,
-                    value: _showChart,
-                    onChanged: (val) {
-                      setState(() {
-                        _showChart = val;
-                      });
-                    },
-                  ),
-                ],
-              ),
+              ..._buildLandscapeContent(_workingDeviceHeight, _txListWidget),
             if (!_isLandscape)
-              Container(
-                height: _workingDeviceHeight * 0.3,
-                child: Chart(_recentTransactions),
-              ),
-            if (!_isLandscape) _txListWidget,
-            if (_isLandscape)
-              _showChart
-                  ? Container(
-                      height: _workingDeviceHeight * 0.7,
-                      child: Chart(_recentTransactions),
-                    )
-                  : _txListWidget,
+              ..._buildPortraitContent(_workingDeviceHeight, _txListWidget),
           ],
         ),
       ),
