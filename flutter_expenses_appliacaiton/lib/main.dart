@@ -130,13 +130,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           );
 
-    final workingDeviceHeight = _mediaQuery.size.height -
+    final _workingDeviceHeight = _mediaQuery.size.height -
         _appBar.preferredSize.height -
         _mediaQuery.padding.top;
 
     final _txListWidget = Container(
         child: TransactionList(_userTransactions, _deleteTransaction),
-        height: workingDeviceHeight * 0.7);
+        height: _workingDeviceHeight * 0.7);
 
     final _pageBody = SafeArea(
       child: SingleChildScrollView(
@@ -164,14 +164,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             if (!_isLandscape)
               Container(
-                height: workingDeviceHeight * 0.3,
+                height: _workingDeviceHeight * 0.3,
                 child: Chart(_recentTransactions),
               ),
             if (!_isLandscape) _txListWidget,
             if (_isLandscape)
               _showChart
                   ? Container(
-                      height: workingDeviceHeight * 0.7,
+                      height: _workingDeviceHeight * 0.7,
                       child: Chart(_recentTransactions),
                     )
                   : _txListWidget,
