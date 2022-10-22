@@ -6,14 +6,12 @@ import '../models/transaction.dart';
 class TransactionItem extends StatelessWidget {
   const TransactionItem({
     Key key,
-    @required Transaction userTransaction,
-    @required Function deleteTx,
-  })  : _userTransaction = userTransaction,
-        _deleteTx = deleteTx,
-        super(key: key);
+    @required this.userTransaction,
+    @required this.deleteTx,
+  }) : super(key: key);
 
-  final Transaction _userTransaction;
-  final Function _deleteTx;
+  final Transaction userTransaction;
+  final Function deleteTx;
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +24,20 @@ class TransactionItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(6),
             child: FittedBox(
-              child: Text('${_userTransaction.amount}zł'),
+              child: Text('${userTransaction.amount}zł'),
             ),
           ),
         ),
         title: Text(
-          _userTransaction.title,
+          userTransaction.title,
           style: Theme.of(context).textTheme.headline6,
         ),
         subtitle: Text(
-          DateFormat.yMMMd().format(_userTransaction.date),
+          DateFormat.yMMMd().format(userTransaction.date),
         ),
         trailing: MediaQuery.of(context).size.width > 360
             ? FlatButton.icon(
-                onPressed: () => _deleteTx(_userTransaction.id),
+                onPressed: () => deleteTx(userTransaction.id),
                 textColor: Theme.of(context).errorColor,
                 icon: const Icon(Icons.delete),
                 label: const Text('Delete'),
@@ -47,7 +45,7 @@ class TransactionItem extends StatelessWidget {
             : IconButton(
                 icon: const Icon(Icons.delete),
                 color: Theme.of(context).errorColor,
-                onPressed: () => _deleteTx(_userTransaction.id),
+                onPressed: () => deleteTx(userTransaction.id),
               ),
       ),
     );
