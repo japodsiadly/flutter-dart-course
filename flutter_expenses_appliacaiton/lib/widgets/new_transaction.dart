@@ -96,9 +96,10 @@ class _NewTransactionState extends State<NewTransaction> {
                       ),
                     ),
                     TextButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor)),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColor,
+                        onPrimary: Theme.of(context).textTheme.button.color,
+                      ),
                       onPressed: _presentDatePicker,
                       child: Text(
                         'Choose Date',
@@ -108,11 +109,11 @@ class _NewTransactionState extends State<NewTransaction> {
                   ],
                 ),
               ),
-              ElevatedButton(
+              TextButton(
                 child: Text('Add Transaction'),
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
-                    onPrimary: Theme.of(context).textTheme.button.color,
+                  onPrimary: Theme.of(context).textTheme.button.color,
                 ),
                 onPressed: _submitData,
               )
